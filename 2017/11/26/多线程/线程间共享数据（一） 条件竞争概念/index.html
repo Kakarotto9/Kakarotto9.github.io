@@ -3,13 +3,16 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
-  <title>Archives: 2019 | Hexo</title>
+  <title>线程间共享数据（一） 条件竞争概念 | Hexo</title>
   <meta name="author" content="John Doe">
+  
+  <meta name="description" content="一 不变量不变量通常会在一次更新中被破坏，等更新完成不变量又回归正确状态。
+比如双链表中每个节点都有一个指针指向列表中下一个节点，还有一个指针指向前一个节点。其中不变量就是节点A中指向“下一个”节点B的指针，还有前向指针。为了从列表中删除一个节点，其两边节点的指针都需要更新。当其中一边更新完成时，不">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  
+  <meta property="og:title" content="线程间共享数据（一） 条件竞争概念">
   <meta property="og:site_name" content="Hexo">
 
   
@@ -112,17 +115,33 @@
 		<div class="content">
 			<!-- index -->
 		   
-			  	<h2>归档</h2>
-		  		
-	              <p class="archive-item">
-						<a href="/2019/03/30/多线程/多线程2/" class="archive-title"></a><span class="archive post-time">2019-03-30</span>
-					</p>
-			  	
-	              <p class="archive-item">
-						<a href="/2019/03/30/hello-world/" class="archive-title">Hello World</a><span class="archive post-time">2019-03-30</span>
-					</p>
-			  	
-			  <!-- post -->
+
+			  		<h2>线程间共享数据（一） 条件竞争概念</h2>
+					
+					<div>
+						<span class="post-time">2017-11-26 20:37:11</span>
+					</div>	
+					
+
+					<div class="article-content">
+						<h2 id="一-不变量"><a href="#一-不变量" class="headerlink" title="一 不变量"></a>一 不变量</h2><p>不变量通常会在一次更新中被破坏，等更新完成不变量又回归正确状态。</p>
+<p>比如双链表中每个节点都有一个指针指向列表中下一个节点，还有一个指针指向前一个节点。其<br>中不变量就是节点A中指向“下一个”节点B的指针，还有前向指针。为了从列表中删除一个节<br>点，其两边节点的指针都需要更新。当其中一边更新完成时，不变量就被破坏了，直到另一<br>边也完成更新；在两边都完成更新后，不变量就又稳定了</p>
+<p><img src="lianbiao.png" alt="image"></p>
+<p>这里的不变量：两个链表的前后指针指向的位置一致。也就是一个链表节点A尾指针指向的节点B，节点B的头指针也必须指向节点A 。</p>
+<p>而图b，c中不变量已经被破坏，也就是处于中间状态，所以这个时候如果有其他线程操作A，B节点就可能出现错误。所以说在不变量被破坏的情况下，进行并发，十分有可能出现错误。而这种错误，也被成为”条件竞争“</p>
+<h2 id="二-条件竞争"><a href="#二-条件竞争" class="headerlink" title="二 条件竞争"></a>二 条件竞争</h2><h3 id="良性竞争"><a href="#良性竞争" class="headerlink" title="良性竞争"></a>良性竞争</h3><p>并发中竞争条件的形成，取决于一个以上线程的相对执行顺序，每个线程都抢着完成自己的<br>任务。大多数情况下，即使改变执行顺序，也是良性竞争，其结果可以接受</p>
+<blockquote>
+<p>多个线程同时往一个队列添加任务，因为<strong>不变量</strong>不变，所以谁先谁后无影响</p>
+</blockquote>
+<h3 id="恶性竞争："><a href="#恶性竞争：" class="headerlink" title="恶性竞争："></a>恶性竞争：</h3><p>当不变量遭到破坏时，才会产生恶性条件竞争，比如双向链表的例子。并发中对<br>数据的条件竞争通常表示为“恶性”(problematic)条件竞争</p>
+<p>恶性条件竞争通常发生于完成对多于一个的数据块的修改时，例如，对两个连接指针的修改<br>(如图3.1)。因为操作要访问两个独立的数据块，独立的指令将会对数据块将进行修改，并且<br>其中一个线程可能正在进行时，另一个线程就对数据块进行了访问</p>
+<h3 id="根据不变量概念提出避免恶性竞争的方法："><a href="#根据不变量概念提出避免恶性竞争的方法：" class="headerlink" title="根据不变量概念提出避免恶性竞争的方法："></a>根据不变量概念提出避免恶性竞争的方法：</h3><p><strong>方法一</strong>：只让修改的线程看到破坏了不变量的中间状态，也就是图b和图c的状态。也就是当处于中间状态的时候，其他线程不能进行访问相关结构体 </p>
+<p><strong>方法二</strong>：更改设计方法，让修改时不会出现中间状态的情况，这种情况（称为“无锁编程”）会增加设计难度，让工程变复杂  </p>
+<p><strong>方法三</strong>：采用事物的概念（数据库对数据处理的方法），让修改时的数据和状态存入事物日志，然后将之前的操作合并为一步，再进行提交。<br>当数据结构被另一个线程修改后，或处理已经重启的情况下，提交就会无法进行，这称作为“软件事务内存”</p>
+
+					</div>
+
+			  <!-- about -->
 			  
 		</div>
 
@@ -131,6 +150,8 @@
 
 		<div class="comment-section">
   
+  
+
 
 </div>
 	</div>

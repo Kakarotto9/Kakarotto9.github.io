@@ -3,13 +3,20 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
-  <title>设计模式 | Hexo</title>
+  <title>权限管理 | Hexo</title>
   <meta name="author" content="John Doe">
+  
+  <meta name="description" content="更该用户所有者和群组1 更改群组chgrp （-r）  群组名 文件名/目录名      
+//加-r（recursive递归）代表递归更改该目录下的所有文件的群组所有者
+2 更改所有者chown (-r) 用户名  文件名/目录名  
+
+chown lhf dir1: 把dir1拥有者改为lhf
+">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  
+  <meta property="og:title" content="权限管理">
   <meta property="og:site_name" content="Hexo">
 
   
@@ -112,13 +119,42 @@
 		<div class="content">
 			<!-- index -->
 		   
-			  	<h2>归档</h2>
-		  		
-	              <p class="archive-item">
-						<a href="/2019/03/27/设计方法/回调机制/" class="archive-title">回调机制</a><span class="archive post-time">2019-03-27</span>
-					</p>
-			  	
-			  <!-- post -->
+
+			  		<h2>权限管理</h2>
+					
+					<div>
+						<span class="post-time">2019-03-24 13:57:04</span>
+					</div>	
+					
+
+					<div class="article-content">
+						<h2 id="更该用户所有者和群组"><a href="#更该用户所有者和群组" class="headerlink" title="更该用户所有者和群组"></a>更该用户所有者和群组</h2><p>1 更改群组<br>chgrp （-r）  群组名 文件名/目录名      </p>
+<p>//加-r（recursive递归）代表递归更改该目录下的所有文件的群组所有者</p>
+<p>2 更改所有者<br>chown (-r) 用户名  文件名/目录名  </p>
+<blockquote>
+<p>chown lhf dir1: 把dir1拥有者改为lhf</p>
+</blockquote>
+<p> 3 更改所有者+群组<br> chown (-r)  群组名：用户   文件名/目录名      (群组名后加 ‘:’)</p>
+<blockquote>
+<p>chown  lhf：vip 1.txt： 把1.txt的群组改为lhf，所有者改为vip</p>
+</blockquote>
+<h2 id="权限管理命令："><a href="#权限管理命令：" class="headerlink" title="权限管理命令："></a>权限管理命令：</h2><p>更该用户权限命令</p>
+<ul>
+<li>chmod [0-7][0-7][0-7] fileName </li>
+<li>chmod (a/u/g/o) (+/-)  (r/w/x) fileName</li>
+</ul>
+<h2 id="目录权限"><a href="#目录权限" class="headerlink" title="目录权限"></a>目录权限</h2><p>r： 只有 r 确实可以让用户读取目录的文件名列表，不过详细的信息却还是读不到的，没有r 的话，使用 [tab] 时，他就无法自动帮你补齐档名了！（ls命令）</p>
+<p>w：可以新增，删除文件，更改文件 （mkdir，rm等命令）<br>x：进入该目录，也就是将该目录当作工作目录（cd）。</p>
+<p>如果没有x无法当作工作目录，所以无法操作该目录下的文件。<br>例如：<br>/tmp/file1    lhf用户对 /tmp只有r权限，对file1权限为rwx</p>
+<p>bash《lhf》： cd /tmp        //错误，没有x所以无法进入<br>bash《lhf》： cat /tmp/file1       //错误，没有x所以无法对目录下文件操作<br>bash《lhf》： touch  /tmp/file2（touch创建新文件）       //错误，没有w，无法给目录添加文件</p>
+<p>bash《lhf》： ls /tmp     //正确，有r权限， 但因为对/tmp没有x权限，所以只能显式如下:<br>total 0<br>?????????? ? ? ? ? ? file1</p>
+<p><img src="/img/dir1.png" alt="image"></p>
+<p>问题2：<br>如果我的目录为底下的样式，请问 testgroup 这个群组的成员与其他人(others)是否可以进入本目录？<br>drwxr-xr– 1 test1 testgroup 5238 Jun 19 10:25 groups/<br>答：<br>  文件拥有者 test1[rwx]可以在本目录中进行任何工作；<br>  而 testgroup 这个群组[r-x]的账号，例如 test2, test3 亦可以进入本目录进行工作，但是不能在本目录下进行<br>写入的动作；<br>  至于 other 的权限中[r–]虽然有 r ，但是由于没有 x 的权限，因此 others 的使用者，并不能进入此目录（也就是不能用cd 来进入），<br>但是可以在 该目录的上级目录（或更高层次）  用 ls 目录名 来显式目录内的文件名。</p>
+<p>如果 是r– ，就是只能用 ls指令，不能用cd来进入该目录。  </p>
+
+					</div>
+
+			  <!-- about -->
 			  
 		</div>
 
@@ -127,6 +163,8 @@
 
 		<div class="comment-section">
   
+  
+
 
 </div>
 	</div>

@@ -3,13 +3,24 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
-  <title>设计模式 | Hexo</title>
+  <title>多线程编程 | Hexo</title>
   <meta name="author" content="John Doe">
+  
+  <meta name="description" content="竞争条件竞争条件取决于多个线程相对顺序，但大多数情况下是良性竞争，例如：
+
+多个线程同时往一个队列添加任务，因为不变量不变，所以谁先谁后无影响
+
+恶性竞争：
+
+数据竞争
+并发的去修改一个独立对象，叫做数据竞争，一般会产生错误行为
+
+不变量：链表删除的例子:这里的不变量：两个链表的前后指针指向的位置一">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  
+  <meta property="og:title" content="多线程编程">
   <meta property="og:site_name" content="Hexo">
 
   
@@ -112,13 +123,30 @@
 		<div class="content">
 			<!-- index -->
 		   
-			  	<h2>归档</h2>
-		  		
-	              <p class="archive-item">
-						<a href="/2019/03/27/设计方法/回调机制/" class="archive-title">回调机制</a><span class="archive post-time">2019-03-27</span>
-					</p>
-			  	
-			  <!-- post -->
+
+			  		<h2>多线程编程</h2>
+					
+					<div>
+						<span class="post-time">2019-03-24 22:47:26</span>
+					</div>	
+					
+
+					<div class="article-content">
+						<h3 id="竞争条件"><a href="#竞争条件" class="headerlink" title="竞争条件"></a>竞争条件</h3><p>竞争条件取决于多个线程相对顺序，但大多数情况下是良性竞争，例如：</p>
+<blockquote>
+<p>多个线程同时往一个队列添加任务，因为不变量不变，所以谁先谁后无影响</p>
+</blockquote>
+<h4 id="恶性竞争："><a href="#恶性竞争：" class="headerlink" title="恶性竞争："></a>恶性竞争：</h4><blockquote>
+</blockquote>
+<h4 id="数据竞争"><a href="#数据竞争" class="headerlink" title="数据竞争"></a>数据竞争</h4><blockquote>
+<p>并发的去修改一个独立对象，叫做数据竞争，一般会产生错误行为</p>
+</blockquote>
+<p>不变量：<br>链表删除的例子:<br><img src="/img/lianbiao.png" alt="image"><br>这里的不变量：两个链表的前后指针指向的位置一致。也就是一个链表节点A尾指针指向的节点B，节点B的头指针也必须指向节点A<br>而图b，c中不变量已经被破坏，所以这个时候如果有其他线程操作A，B节点就可能出现错误。</p>
+<p>方法一：只让修改的线程看到破坏了不变量的中间状态，也就是图b和图c的状态。也就是当处于中间状态的时候，其他线程不能进行访问相关结构体<br>方法二：更该设计方法，让修改时不会出现中间状态的情况，这种情况（称为“无锁编程”）会增加设计难度，让工程变复杂<br>方法三：采用事物的概念（数据库对数据处理的方法），让修改时的数据和状态存入事物日志，然后将之前的操作合并为一步，再进行提交。<br>当数据结构被另一个线程修改后，或处理已经重启的情况下，提交就会无法进行，这称作为“软件事务内存”</p>
+
+					</div>
+
+			  <!-- about -->
 			  
 		</div>
 
@@ -127,6 +155,8 @@
 
 		<div class="comment-section">
   
+  
+
 
 </div>
 	</div>

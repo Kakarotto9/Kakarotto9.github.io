@@ -3,13 +3,16 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
-  <title>设计模式 | Hexo</title>
+  <title>异常处理的考虑 | Hexo</title>
   <meta name="author" content="John Doe">
+  
+  <meta name="description" content="异常，是用来报告你能恢复的那一类错误的。举例：（1）socket连server结果读着读着断了，抛一个异常，然后你就去善后。 (2) 数据库关闭连接失败，抛出异常重复关闭 (3)（4）用户输入了什么东西，然后一检查发现不对，抛一个异常，然后你就去善后。  
+对于异常捕捉来讲，你也只能catch你能处">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  
+  <meta property="og:title" content="异常处理的考虑">
   <meta property="og:site_name" content="Hexo">
 
   
@@ -112,13 +115,25 @@
 		<div class="content">
 			<!-- index -->
 		   
-			  	<h2>归档</h2>
-		  		
-	              <p class="archive-item">
-						<a href="/2019/03/27/设计方法/回调机制/" class="archive-title">回调机制</a><span class="archive post-time">2019-03-27</span>
-					</p>
-			  	
-			  <!-- post -->
+
+			  		<h2>异常处理的考虑</h2>
+					
+					<div>
+						<span class="post-time">2019-03-27 11:31:13</span>
+					</div>	
+					
+
+					<div class="article-content">
+						<p>异常，是用来报告你能恢复的那一类错误的。<br>举例：<br>（1）socket连server结果读着读着断了，抛一个异常，然后你就去善后。<br> (2) 数据库关闭连接失败，抛出异常重复关闭<br> (3)<br>（4）用户输入了什么东西，然后一检查发现不对，抛一个异常，然后你就去善后。  </p>
+<p>对于异常捕捉来讲，你也只能catch你能处理的那些异常。</p>
+<p>而对于：<br>（1）数组越界<br>（2）指针的重复释放  </p>
+<p>上面的这些纯属你代码写的有问题。代码的bug是不能靠catch来解决的，必须让他暴露出来。 </p>
+<p>所以，对于异常来说，你能恢复的（socket掉了什么的），那就catch了恢复。你不能恢复的（譬如说vector越界，或者干脆不是异常的access violation），那就在main函数里面catch(…)，备份好用户数据，然后调用API生成dump，发回你公司的服务器，然后让程序结束。</p>
+<p>很多C++程序员的问题，是在于catch了异常之后试图恢复他所不知道的那些情况，这个时候数据结构都已经乱掉了，你勉强让程序继续运行下去，是反社会反人类的。</p>
+
+					</div>
+
+			  <!-- about -->
 			  
 		</div>
 
@@ -127,6 +142,8 @@
 
 		<div class="comment-section">
   
+  
+
 
 </div>
 	</div>
